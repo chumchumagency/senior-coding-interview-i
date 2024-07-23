@@ -18,6 +18,7 @@ const login = async (credentials) => {
 
 const createTask = async (task) => {
   const token = localStorage.getItem('token');
+  console.log('caling api token',token)
   const response = await fetch(`${API_URL}/tasks`, {
     method: 'POST',
     headers: {

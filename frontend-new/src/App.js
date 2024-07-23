@@ -1,3 +1,38 @@
+// import { useState } from 'react';
+// import './App.css';
+// import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+// import LoginPage from './pages/LoginPage';
+// import TaskPage from './pages/TaskPage';
+// import api from './api/api';
+
+// function App() {
+//   const [token, setToken] = useState(null);
+
+//   const login = async (credentials) => {
+//     const response = await api.login(credentials);
+//     setToken(response.token);
+//   };
+
+//   const router = createBrowserRouter([
+//     {
+//       path: '/',
+//       element: <LoginPage login={login} />,
+//     },
+//     {
+//       path: '/login',
+//       element: <LoginPage login={login} />,
+//     },
+//     {
+//       path: '/tasks',
+//       element: <TaskPage api={api} />,
+//     },
+//   ]);
+
+//   return <RouterProvider router={router} />;
+// }
+
+// export default App;
+
 import { useState } from 'react';
 import './App.css';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
@@ -6,11 +41,17 @@ import TaskPage from './pages/TaskPage';
 import api from './api/api';
 
 function App() {
-  const [token, setToken] = useState(null);
-
+  const [token, setToken] = useState(localStorage.getItem('token'));
+   console.log('token========',token);
   const login = async (credentials) => {
-    const response = await api.login(credentials);
-    setToken(response.token);
+    try {
+      const response = await api.login(credentials);
+      console.log('response',response)
+      setToken(response.token);
+      localStorage.setItem('token', response.token); // Store token in localStorage
+    } catch (error) {
+      console.error('Login failed:', error.message);
+    }
   };
 
   const router = createBrowserRouter([
@@ -24,7 +65,7 @@ function App() {
     },
     {
       path: '/tasks',
-      element: <TaskPage api={api} />,
+      element: token ? <TaskPage api={api} token={token} /> : <LoginPage login={login} />, // Ensure user is redirected to login if not authenticated
     },
   ]);
 
@@ -32,3 +73,4 @@ function App() {
 }
 
 export default App;
+
