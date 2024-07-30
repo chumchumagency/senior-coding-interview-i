@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import TaskList from '../components/TaskList';
-import TaskItem from '../components/TaskItem';
+import TaskForm from '../components/TaskForm';
+import api from '../api/api';
 
-const TaskPage = ({ api }) => {
+const TaskPage = () => {
   const [tasks, setTasks] = useState([]);
 
   useEffect(() => {
@@ -12,16 +13,15 @@ const TaskPage = ({ api }) => {
     };
     fetchTasks();
   }, [api]);
-
-  const addTask = async (task) => {
-    const newTask = await api.createTask(task);
-    setTasks([...tasks, newTask]);
-  };
+   
+  const addNewTask = async (data) => {
+    const response = await api.createTask(data)
+    setTasks([...tasks, response]);
+  }
 
   return (
     <div>
-      <h1>Tasks</h1>
-      <TaskItem addTask={addTask} />
+      <TaskForm addNewTask={addNewTask}/>
       <TaskList tasks={tasks} />
     </div>
   );

@@ -1,6 +1,21 @@
 const BASE_URL = process.env.REACT_APP_API_URL;
 const API_URL = `${BASE_URL}/api`;
 
+const register = async (credentials) => {
+  const response = await fetch(`${API_URL}/auth/register`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(credentials),
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    console.log("Error Message :", data?.message)
+  }
+  return data;
+};
+
 const login = async (credentials) => {
   const response = await fetch(`${API_URL}/auth/login`, {
     method: 'POST',
@@ -10,8 +25,10 @@ const login = async (credentials) => {
     body: JSON.stringify(credentials),
   });
   const data = await response.json();
+  localStorage.setItem('token', data?.token);
+
   if (!response.ok) {
-    throw new Error(data.message || 'Something went wrong');
+    console.log("Error Message :", data?.message)
   }
   return data;
 };
@@ -28,7 +45,7 @@ const createTask = async (task) => {
   });
   const data = await response.json();
   if (!response.ok) {
-    throw new Error(data.message || 'Something went wrong');
+    console.log("Error Message :", data?.message)
   }
   return data;
 };
@@ -42,13 +59,14 @@ const getTasks = async () => {
   });
   const data = await response.json();
   if (!response.ok) {
-    throw new Error(data.message || 'Something went wrong');
+    console.log("Error Message :", data?.message)
   }
   return data;
 };
 
 const api = {
   login,
+  register,
   createTask,
   getTasks,
 };
