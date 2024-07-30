@@ -1,24 +1,25 @@
 import React, { useState } from 'react';
 import { TextField, Button, Container, Typography, Box, Link } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import api from '../api/api';
+import api from '../api/api'
 
-const LoginForm = () => {
+const RegisterForm = () => {
+  const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    await api.login({email, password});
-    navigate('/tasks');
+    await api.register({userName:username, email, password});
+    navigate('/login');
   };
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  const isFormValid = emailRegex.test(email) && password.length >= 8;
+  const isFormValid = username !== '' && emailRegex.test(email) && password.length >= 8;
 
-  const handleRegisterRedirect = () => {
-    navigate('/register');
+  const handleLoginRedirect = () => {
+    navigate('/login');
   };
 
   return (
@@ -32,9 +33,21 @@ const LoginForm = () => {
         }}
       >
         <Typography component="h1" variant="h5">
-          Log In
+          Register
         </Typography>
         <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            id="username"
+            label="Username"
+            name="username"
+            autoComplete="username"
+            autoFocus
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
           <TextField
             margin="normal"
             required
@@ -43,7 +56,6 @@ const LoginForm = () => {
             label="Email Address"
             name="email"
             autoComplete="email"
-            autoFocus
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
@@ -64,21 +76,21 @@ const LoginForm = () => {
             fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 2, py:1 }}
-            className='mt-16 '
+            className='mt-16'
             disabled={!isFormValid}
           >
-            Log In
+            Register
           </Button>
           <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
             <Typography variant="body2" color="text.secondary">
-              Don't have an account?{' '}
+              Already have an account?{' '}
               <Link
-                onClick={handleRegisterRedirect}
+                onClick={handleLoginRedirect}
                 underline="hover"
                 color="primary"
                 className='cursor-pointer'
               >
-                Register
+                Log In
               </Link>
             </Typography>
           </Box>
@@ -88,6 +100,4 @@ const LoginForm = () => {
   );
 };
 
-export default LoginForm;
-
-
+export default RegisterForm;
